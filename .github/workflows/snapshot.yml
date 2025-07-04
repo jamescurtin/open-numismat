@@ -36,7 +36,7 @@ jobs:
       shell: bash
       run: |
         echo "current-version=$(bump-my-version show current_version)" >> $GITHUB_OUTPUT
-        echo "current-release=$(bump-my-version show scm_info.distance_to_latest_tag)" >> $GITHUB_  
+        echo "current-release=$(bump-my-version show scm_info.distance_to_latest_tag)" >> $GITHUB_OUTPUT
   
   macos:
     needs: [title]
