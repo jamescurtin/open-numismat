@@ -733,6 +733,16 @@ class ImportSettingsPage(QWidget):
         self.skip_currency.setChecked(settings['colnect_skip_currency'])
         fLayout.addRow(self.skip_currency)
 
+        self.colnect_api_key = QLineEdit(self)
+        self.colnect_api_key.setMinimumWidth(120)
+        self.colnect_api_key.setText(settings['colnect_api_key'])
+        fLayout.addRow(self.colnect_api_key)
+
+        self.colnect_proxy = QLineEdit(self)
+        self.colnect_proxy.setMinimumWidth(120)
+        self.colnect_proxy.setText(settings['colnect_proxy'])
+        fLayout.addRow(self.colnect_proxy)
+
         vLayout = QVBoxLayout()
         vLayout.addLayout(fLayout)
 
@@ -810,6 +820,8 @@ class ImportSettingsPage(QWidget):
         settings = Settings()
 
         settings['colnect_locale'] = self.colnect_locale.currentData()
+        settings['colnect_api_key'] = self.colnect_api_key.text()
+        settings['colnect_proxy'] = self.colnect_proxy.text()
         settings['colnect_skip_currency'] = self.skip_currency.isChecked()
         settings['ans_split_denomination'] = self.ans_split_denomination.isChecked()
         settings['ans_locale_en'] = self.ans_locale_en.isChecked()

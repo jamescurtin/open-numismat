@@ -33,11 +33,24 @@ from OpenNumismat.Tools.Gui import ProgressDialog
 
 colnectAvailable = True
 
+settings = Settings()
+
+colnect_proxy = settings['colnect_proxy']
+colnect_api_key = settings['colnect_api_key']
+
 try:
     from OpenNumismat.private_keys import COLNECT_PROXY, COLNECT_KEY
+    if not colnect_proxy:
+        colnect_proxy = COLNECT_PROXY
+    if not colnect_api_key:
+        colnect_api_key = COLNECT_KEY
 except ImportError:
-    print('Importing from Colnect not available')
+    pass
+
+print(f'Colnect proxy: {colnect_proxy}\nColnect key:{colnect_api_key}' )
+if not colnect_proxy or not colnect_api_key:
     colnectAvailable = False
+    print('Importing from Colnect not available')
 
 CONNECTION_TIMEOUT = 10
 MAX_ITEMS = 150
@@ -160,7 +173,7 @@ class ColnectConnector(QObject):
                         value = int(result)
                     except:
                         value = ''
-                
+
             record.setValue(column[0], value)
         # Add URL
         record.setValue('url', data[-1])
@@ -272,7 +285,7 @@ class ColnectConnector(QObject):
             params += f"/face_value/{value}"
         if currency:
             params += f"/currency/{currency}"
-        
+
         return params
 
     def getCount(self, category, country, series=None,
@@ -281,7 +294,7 @@ class ColnectConnector(QObject):
                  distribution, year, value, currency)
         item_ids = self.getData(action, 'en')
         return len(item_ids)
-    
+
     @waitCursorDecorator
     def getData(self, action, lang=None):
         url = self._baseUrl(lang) + action
@@ -355,7 +368,7 @@ class ColnectConnector(QObject):
                  distribution, year, value, currency)
         item_ids = self.getData(action, 'en')
         return item_ids
-    
+
     def getCountries(self, category):
         action = "countries/cat/%s" % category
         return self.getData(action)
@@ -587,7 +600,7 @@ class ColnectDialog(QDialog):
         record = self.model.record()
         self.colnect.makeItem(category, data, record)
         return record
-    
+
     def _isDistributionEnabled(self, category):
         return category in ('coins', 'stamps')
 
@@ -646,30 +659,30 @@ class ColnectDialog(QDialog):
 
         if self.countrySelector.currentIndex() >= 0:
             self._partsEnable(True)
-    
+
             category = self.categorySelector.currentData()
             country = self.countrySelector.currentData()
             if not country:
                 return
-    
+
             series = self.colnect.getSeries(category, country)
             self._updatePart(self.seriesSelector, series)
 
             if self._isDistributionEnabled(category):
                 distributions = self.colnect.getDistributions(category, country)
                 self._updatePart(self.distributionSelector, distributions)
-    
+
             years = self.colnect.getYears(category, country)
             self._updatePart(self.yearSelector, years)
-    
+
             values = self.colnect.getValues(category, country)
             self._updatePart(self.valueSelector, values)
-    
+
             currencies = self.colnect.getCurrencies(category, country)
             self._updatePart(self.currencySelector, currencies)
         else:
             self._partsEnable(False)
-    
+
     def partChanged(self, _index):
         self._clearTable()
 

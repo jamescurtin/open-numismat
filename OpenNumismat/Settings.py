@@ -104,6 +104,8 @@ class Settings(BaseSettings):
         'updates': False,
         'template': default_template,
         'colnect_locale': _getLocale(),
+        'colnect_api_key': '',
+        'colnect_proxy': '',
         'colnect_skip_currency': True,
         'ans_split_denomination': True,
         'ans_locale_en': False,
